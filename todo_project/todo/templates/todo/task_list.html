@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'todo/css/styles.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    
+    <style>
+        body {
+            background-image: url("{% static 'images/background.JPG' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh; /* 화면 전체 높이 */
+            margin: 0;
+            font-family: 'Poppins', sans-serif; /* 폰트 설정 */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-check-square"></i> 김승우의 하루 계획</h1>
+    </header>
+
+    <div class="container">
+        <h2>TO-DO</h2>
+        <ul>
+            {% for task in tasks %}
+                <li>
+                    <form action="{% url 'toggle_task' task.id %}" method="POST">
+                        {% csrf_token %}
+                        <input type="checkbox" name="completed" {% if task.completed %}checked{% endif %} onchange="this.form.submit()">
+                        <label>{{ task.title }}</label>
+                    </form>
+                    <form action="{% url 'delete_task' task.id %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit">REMOVE</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h2>DONE</h2>
+        <ul>
+            {% for task in completed_tasks %}
+                <li>
+                    <form action="{% url 'toggle_task' task.id %}" method="POST">
+                        {% csrf_token %}
+                        <input type="checkbox" name="completed" {% if task.completed %}checked{% endif %} onchange="this.form.submit()">
+                        <label>{{ task.title }}</label>
+                    </form>
+                    <form action="{% url 'delete_task' task.id %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit">REMOVE</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Add Task Section -->
+    <form action="{% url 'task_list' %}" method="POST" style="display:flex; gap:10px;">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="Add a new task..." required>
+        <button type="submit" class="add-button">ADD</button>
+    </form>
+
+</body>
+</html>
